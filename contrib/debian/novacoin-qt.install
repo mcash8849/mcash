@@ -1,0 +1,5 @@
+MCASH-qt usr/bin
+share/pixmaps/MCASH32.xpm usr/share/pixmaps
+share/pixmaps/MCASH80.xpm usr/share/pixmaps
+debian/MCASH-qt.desktop usr/share/applications
+debian/MCASH-qt.protocol usr/share/kde4/services/

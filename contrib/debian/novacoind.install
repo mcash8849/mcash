@@ -1,0 +1,2 @@
+debian/bin/MCASHd usr/bin
+src/MCASHd usr/lib/MCASH

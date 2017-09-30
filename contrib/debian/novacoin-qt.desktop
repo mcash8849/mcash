@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=MCASH
+Comment=MCASH P2P Cryptocurrency
+Comment[ru]=MCASH, P2P криптовалюта
+Comment[fr]=MCASH, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=MCASH, eşten eşe kriptografik sanal para birimi
+Exec=/usr/bin/MCASH-qt
+Terminal=false
+Type=Application
+Icon=/usr/share/pixmaps/MCASH80.xpm
+MimeType=x-scheme-handler/MCASH;
+Categories=Office;

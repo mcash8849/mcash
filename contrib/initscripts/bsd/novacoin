@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# PROVIDE: MCASH
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# MCASH_enable (bool): Set to NO by default. Set this variable to YES if you want to enable MCASH service.
+# MCASH_config (path): Set to /usr/local/etc/MCASH.conf by default.
+# MCASH_user:  The user account MCASH daemon runs as. It uses 'root' user by default.
+# MCASH_group: The group account MCASH daemon runs as. It uses 'wheel' group by default.
+# MCASH_datadir (str): Default to "/var/db/MCASH". Base data directory.
+
+. /etc/rc.subr
+
+name=MCASH
+rcvar=MCASH_enable
+
+: ${MCASH_enable:=NO}
+: ${MCASH_config=/usr/local/etc/MCASH.conf}
+: ${MCASH_datadir=/var/db/MCASH}
+: ${MCASH_user="root"}
+: ${MCASH_group="wheel"}
+
+required_files=${MCASH_config}
+command=/usr/local/bin/MCASHd
+MCASH_chdir=${MCASH_datadir}
+pidfile="${MCASH_datadir}/MCASHd.pid"
+stop_cmd=MCASH_stop
+command_args="-conf=${MCASH_config} -datadir=${MCASH_datadir} -daemon -pid=${pidfile}"
+start_precmd="${name}_prestart"
+
+MCASH_create_datadir()
+{
+	echo "Creating data directory"
+	eval mkdir -p ${MCASH_datadir}
+	[ $? -eq 0 ] && chown -R ${MCASH_user}:${MCASH_group} ${MCASH_datadir}
+}
+
+MCASH_prestart()
+{
+	if [ ! -d "${MCASH_datadir}/." ]; then
+		MCASH_create_datadir || return 1
+	fi
+}
+
+MCASH_requirepidfile()
+{
+	if [ ! "0`check_pidfile ${pidfile} ${command}`" -gt 1 ]; then
+		echo "${name} not running? (check $pidfile)."
+		exit 1
+	fi
+}
+
+MCASH_stop()
+{
+    MCASH_requirepidfile
+
+	echo "Stopping ${name}."
+	eval ${command} -conf=${MCASH_config} -datadir=${MCASH_datadir} stop
+	wait_for_pids ${rc_pid}
+}
+
+load_rc_config $name
+run_rc_command "$1"
